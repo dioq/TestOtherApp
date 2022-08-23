@@ -9,6 +9,8 @@
 
 @interface TestOtherAppUITests : XCTestCase
 
+@property(nonatomic,strong)XCUIApplication *app;
+
 @end
 
 @implementation TestOtherAppUITests
@@ -27,11 +29,42 @@
 }
 
 - (void)testExample {
-    // UI tests must launch the application that they test.
-    XCUIApplication *app = [[XCUIApplication alloc] init];
-    [app launch];
-
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+    _app = [[XCUIApplication alloc] initWithBundleIdentifier:@"com.tencent.xin"];
+    [_app launch];
+    [_app.buttons[@"登录"] tap];
+    [NSThread sleepForTimeInterval:2.0];
+    [_app.buttons[@"使用其他方式登录"] tap];
+    [_app.buttons[@"用微信号/QQ号/邮箱登录"] tap];
+    
+    XCUIElement *accountTF = [_app.textFields elementBoundByIndex:0];
+    [accountTF tap];
+    [accountTF typeText:@"+66837150849"];
+    
+    XCUIElement *pwdTF = [_app.secureTextFields elementBoundByIndex:0];
+    [pwdTF tap];
+    [pwdTF typeText:@"mowo4585"];
+    
+    [_app.buttons[@"同意并登录"] tap];
+    
+    [NSThread sleepForTimeInterval:2.0];
+    XCUIElement *image = self.app.images[@"slider"];
+    if (image.exists) {
+//        NSLog(@"image\n%@",image);
+        NSLog(@"%f %f %f %f",image.frame.origin.x,image.frame.origin.y,
+              image.frame.size.width,image.frame.size.height);
+        float x_rat = (image.frame.origin.x + (image.frame.size.width / 2)) / 375;
+        float y_rat = (image.frame.origin.y + (image.frame.size.height / 2)) / 667;
+        CGVector point1 = CGVectorMake(x_rat, y_rat);
+        
+        float x_target = (image.frame.origin.x + 150) / [UIScreen mainScreen].bounds.size.width;
+        CGVector point2 = CGVectorMake(x_target, y_rat);
+        XCUICoordinate *coord1 = [self.app coordinateWithNormalizedOffset:point1];
+        XCUICoordinate *coord2 = [self.app coordinateWithNormalizedOffset:point2];
+        // 从coord1 拖到 coord2点
+        [coord1 pressForDuration:3 thenDragToCoordinate:coord2];
+    }else{
+        NSLog(@"滑动不存在 .....");
+    }
 }
 
 - (void)testLaunchPerformance {

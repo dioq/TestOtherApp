@@ -13,6 +13,10 @@
 
 @implementation ViewController
 
+/*
+ WeChat.app          com.tencent.xin
+ LINE.app            jp.naver.line
+ */
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
