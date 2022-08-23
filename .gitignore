@@ -1,3 +1,5 @@
 .DS_Store
 *.app
 *.ipa
+
+TestOtherApp.xcodeproj/project.xcworkspace/xcuserdata/
